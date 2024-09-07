@@ -1,7 +1,14 @@
-import ColorField from '@repo/ui/colorField'
+import NumericField from '@repo/ui/numericField'
+
+import PlayGround from './playground/Playground'
 
 function App() {
-  return <ColorField />
+  return (
+    <PlayGround title="Numeric Field">
+      <NumericField />
+      <input type="number" />
+    </PlayGround>
+  )
 }
 
 export default App
