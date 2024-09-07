@@ -1,55 +1,110 @@
-import type { ChangeEvent, KeyboardEvent } from 'react'
-import { DetailedHTMLProps, InputHTMLAttributes } from 'react'
+import type { ChangeEvent, ClipboardEvent, KeyboardEvent } from 'react'
 
-type defaultType = DetailedHTMLProps<
-  InputHTMLAttributes<HTMLInputElement>,
-  HTMLInputElement
->
+const navigationEditingKeys = [
+  'Backspace', // Deletes the character before the cursor
+  'Delete', // Deletes the character after the cursor
+  'Tab', // Moves focus to the next form element
+  'ArrowLeft', // Moves the cursor one character to the left
+  'ArrowRight', // Moves the cursor one character to the right
+  'Home', // Moves the cursor to the beginning of the input
+  'End', // Moves the cursor to the end of the input
+]
 
-type defaultClear = Omit<
-  defaultType,
-  'min' | 'max' | 'step' | 'type' | 'disabled'
->
+const formControlKeys = [
+  'Enter', // Submits the form or input
+  'Escape', // Cancels the current operation or closes dialogs
+]
 
-export type INumberInput = defaultClear & {
-  type?: 'float' | 'integer'
-  onChange?: (value: number | null) => void
-  max?: number
-  disabled?: boolean
-  enableSeparator?: boolean
-  separator?: ' ' | '_'
+const specialCharacters = [
+  '.', // Decimal point for floating-point numbers
+  ',', // Decimal comma for floating-point numbers
+  '-', // Minus sign for negative numbers
+]
+
+const numberKeys = [
+  '0', // Zero
+  '1', // One
+  '2', // Two
+  '3', // Three
+  '4', // Four
+  '5', // Five
+  '6', // Six
+  '7', // Seven
+  '8', // Eight
+  '9', // Nine
+]
+
+const operationCharacters = [
+  'a', // Select all operation key (Ctrl/Cmd + A)
+  'A', // Select all operation key (Ctrl/Cmd + A)
+  'v', // Paste operation key (Ctrl/Cmd + V)
+  'V', // Paste operation key (Ctrl/Cmd + V)
+  'c', // Copy operation key (Ctrl/Cmd + V)
+  'C', // Copy operation key (Ctrl/Cmd + V)
+  'x', // Cut operation key (Ctrl/Cmd + V)
+  'X', // Cut operation key (Ctrl/Cmd + V)
+]
+
+const isAnOperation = (event: KeyboardEvent): Boolean => {
+  return (
+    (event.ctrlKey || event.metaKey) && operationCharacters.includes(event.key)
+  )
 }
 
-export default class InputNumberUtils {
-  static actionKeys = ['Delete', 'Backspace', 'ArrowLeft', 'ArrowRight']
-  static modifiedKeys = ['a', 'A', 'v', 'V', 'c', 'C', 'x', 'X']
-  static numberKeys = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
+export class PastProcessor {
+  static preventNonNumber(
+    event: ClipboardEvent<HTMLInputElement>,
+    max?: number,
+  ) {
+    const pastedText = event.clipboardData.getData('text')
+    const pastedNumber = Number(pastedText)
 
-  static preventRepeat = (event: KeyboardEvent<HTMLInputElement>): boolean => {
-    if (event.repeat && !this.actionKeys.includes(event.key)) {
+    if (!pastedNumber) {
+      event.preventDefault()
+      return true
+    }
+
+    if (max && pastedNumber > max) {
       event.preventDefault()
 
       return true
     }
-
-    return false
   }
+}
 
-  static preventNonNumbers = (
-    event: KeyboardEvent<HTMLInputElement>,
-    type: 'float' | 'integer',
-  ): boolean => {
-    const allow: string[] = [...this.numberKeys, ...this.actionKeys, '-']
+export class ChangeProcessor {
+  static onChange = (
+    event: ChangeEvent<HTMLInputElement>,
+    enableSeparator: boolean,
+    func?: (value: number | null) => void,
+  ): void | null => {
+    const { value } = event.target
 
-    if (type === 'float') {
-      allow.push('.')
+    if (!func) return
+
+    const trimmedValue = value?.trim()
+
+    if (!trimmedValue) {
+      return func(null)
     }
 
-    if (
-      allow.includes(event.key) ||
-      (event.ctrlKey && this.modifiedKeys.includes(event.key)) ||
-      (event.altKey && this.modifiedKeys.includes(event.key))
-    ) {
+    const regex = new RegExp(enableSeparator ? ' ' : '', 'g')
+    const formattedValue = trimmedValue.replace(regex, '')
+
+    func(Number(formattedValue))
+  }
+}
+
+export class KeyDownProcessor {
+  static allowedKeys = [
+    ...navigationEditingKeys,
+    ...formControlKeys,
+    ...specialCharacters,
+    ...numberKeys,
+  ]
+
+  static preventNonNumeric = (event: KeyboardEvent): boolean => {
+    if (this.allowedKeys.includes(event.key) || isAnOperation(event)) {
       return false
     }
 
@@ -57,12 +112,61 @@ export default class InputNumberUtils {
     return true
   }
 
-  static preventMax = (
-    event: KeyboardEvent<HTMLInputElement>,
-    max: number,
+  static preventRepeat = (event: KeyboardEvent): boolean => {
+    if (
+      event.repeat &&
+      !navigationEditingKeys.includes(event.key) &&
+      !formControlKeys.includes(event.key)
+    ) {
+      event.preventDefault()
+      return true
+    }
+
+    return false
+  }
+
+  static preventDecimalSeparator = (
+    event: KeyboardEvent,
+    type: 'float' | 'integer',
+    decimalSeparator: 'dot' | 'comma',
   ): boolean => {
+    if (event.key !== '.' && event.key !== ',') {
+      return false
+    }
+
+    if (type === 'integer') {
+      event.preventDefault()
+      return true
+    }
+
+    const value = (event.target as HTMLInputElement).value
+
+    if (
+      !value?.length ||
+      (value.length === 1 && value[0] === '-') ||
+      value.includes('.') ||
+      value.includes(',')
+    ) {
+      event.preventDefault()
+      return true
+    }
+
+    if (
+      (decimalSeparator === 'comma' && event.key === '.') ||
+      (decimalSeparator === 'dot' && event.key === ',')
+    ) {
+      event.preventDefault()
+      return true
+    }
+
+    return false
+  }
+
+  static preventMax = (event: KeyboardEvent, max?: number): boolean => {
+    if (!max) return false
+
     const input = event.target as HTMLInputElement
-    const expectedString = input.value + event.key
+    const expectedString = (input.value + event.key).replace(',', '.')
 
     // Check if the expected value exceeds the maximum
     const expectedValue = parseFloat(expectedString)
@@ -76,10 +180,10 @@ export default class InputNumberUtils {
   }
 
   static formatInput = (
-    event: KeyboardEvent<HTMLInputElement>,
+    event: KeyboardEvent,
     enableSeparator: boolean,
   ): boolean => {
-    if (!this.numberKeys.includes(event.key)) return true
+    if (!numberKeys.includes(event.key)) return true
 
     const input = event.target as HTMLInputElement
 
@@ -103,33 +207,4 @@ export default class InputNumberUtils {
 
     return true
   }
-
-  static onChange = (
-    event: ChangeEvent<HTMLInputElement>,
-    enableSeparator: boolean,
-    func?: (value: number | null) => void,
-  ): void | null => {
-    const { value } = event.target
-
-    if (!func) return
-
-    const trimmedValue = value?.trim()
-
-    if (!trimmedValue) {
-      return func(null)
-    }
-
-    const regex = new RegExp(enableSeparator ? ' ' : '', 'g')
-    const formattedValue = trimmedValue.replace(regex, '')
-
-    func(Number(formattedValue))
-  }
 }
-
-/*
- *
- * Resources :
- * https://www.magentaa11y.com/checklist-web/number-input
- * https://stackoverflow.blog/2022/12/26/why-the-number-input-is-the-worst-input
- *https://stackoverflow.com/questions/59584061/why-is-unidentified-returned-on-keyboard-input-on-mobile
- */

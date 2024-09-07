@@ -1,6 +1,7 @@
-import { type ClipboardEvent, type FC, type KeyboardEvent } from 'react'
+import type { ClipboardEvent, FC, KeyboardEvent } from 'react'
 
-import InputNumberUtils, { INumberInput } from './utils'
+import type { INumberInput } from './types'
+import { ChangeProcessor, KeyDownProcessor, PastProcessor } from './utils'
 
 const NumericField: FC<INumberInput> = ({
   type = 'float',
@@ -8,6 +9,7 @@ const NumericField: FC<INumberInput> = ({
   max,
   disabled = false,
   enableSeparator = false,
+  decimalSeparator = 'dot',
 }) => {
   return (
     <input
@@ -16,28 +18,28 @@ const NumericField: FC<INumberInput> = ({
       aria-disabled={`${disabled}`}
       disabled={disabled}
       onPaste={(event: ClipboardEvent<HTMLInputElement>) => {
-        const pastedText = event.clipboardData.getData('text')
-        const pastedNumber = Number(pastedText)
-
-        if (!pastedNumber) {
-          return event.preventDefault()
-        }
-
-        if (max && pastedNumber > max) {
-          return event.preventDefault()
-        }
+        if (PastProcessor.preventNonNumber(event, max)) return
       }}
-      onKeyDown={(event: KeyboardEvent<HTMLInputElement>) => {
-        if (InputNumberUtils.preventRepeat(event)) return
+      onKeyDown={(event: KeyboardEvent) => {
+        if (KeyDownProcessor.preventNonNumeric(event)) return
 
-        if (InputNumberUtils.preventNonNumbers(event, type)) return
+        if (KeyDownProcessor.preventRepeat(event)) return
 
-        if (max && InputNumberUtils.preventMax(event, max)) return
+        if (
+          KeyDownProcessor.preventDecimalSeparator(
+            event,
+            type,
+            decimalSeparator,
+          )
+        )
+          return
 
-        if (InputNumberUtils.formatInput(event, enableSeparator)) return
+        if (KeyDownProcessor.preventMax(event, max)) return
+
+        if (KeyDownProcessor.formatInput(event, enableSeparator)) return
       }}
       onChange={(event) => {
-        InputNumberUtils.onChange(event, enableSeparator, onChange)
+        ChangeProcessor.onChange(event, enableSeparator, onChange)
       }}
     />
   )

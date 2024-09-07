@@ -5,7 +5,7 @@ import PlayGround from './playground/Playground'
 function App() {
   return (
     <PlayGround title="Numeric Field">
-      <NumericField />
+      <NumericField decimalSeparator="comma" max={600} />
       <input type="number" />
     </PlayGround>
   )

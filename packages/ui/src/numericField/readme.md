@@ -67,3 +67,9 @@ When using the HTML `<input type="number">` element, several issues or problems 
 ##
 
 When using the HTML `<input type="text">` element, several issues or problems can arise depending on how the element is used, browser compatibility, and user interaction.
+
+## Ressources
+
+- [Why the number input is the worst input](https://stackoverflow.blog/2022/12/26/why-the-number-input-is-the-worst-input)
+- [Unidentified mobile keyboard input](https://stackoverflow.com/questions/59584061/why-is-unidentified-returned-on-keyboard-input-on-mobile)
+- [Checklist web number input](https://www.magentaa11y.com/checklist-web/number-input)
