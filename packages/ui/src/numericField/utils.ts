@@ -91,7 +91,8 @@ export class ChangeProcessor {
     const regex = new RegExp(enableSeparator ? ' ' : '', 'g')
     const formattedValue = trimmedValue.replace(regex, '')
 
-    func(Number(formattedValue))
+    const parsedValue = Number(formattedValue.replace(',', '.'))
+    func(isNaN(parsedValue) ? null : parsedValue)
   }
 }
 
@@ -173,6 +174,22 @@ export class KeyDownProcessor {
 
     if (!isNaN(expectedValue) && expectedValue > max) {
       event.preventDefault() // Prevent the default action if it exceeds max
+      return true
+    }
+
+    return false
+  }
+
+  static preventSpecial = (event: KeyboardEvent): boolean => {
+    const value = (event.target as HTMLInputElement).value
+
+    if (value?.length !== 0 && event.key === '-') {
+      event.preventDefault()
+      return true
+    }
+
+    if (value?.[0] === '0' && event.key === '0') {
+      event.preventDefault()
       return true
     }
 

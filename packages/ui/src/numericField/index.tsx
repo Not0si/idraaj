@@ -36,6 +36,8 @@ const NumericField: FC<INumberInput> = ({
 
         if (KeyDownProcessor.preventMax(event, max)) return
 
+        if (KeyDownProcessor.preventSpecial(event)) return
+
         if (KeyDownProcessor.formatInput(event, enableSeparator)) return
       }}
       onChange={(event) => {
