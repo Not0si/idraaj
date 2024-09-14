@@ -7,6 +7,7 @@ const NumericField: FC<INumberInput> = ({
   type = 'float',
   onChange,
   max,
+  value = null,
   disabled = false,
   enableSeparator = false,
   decimalSeparator = 'dot',
@@ -17,6 +18,7 @@ const NumericField: FC<INumberInput> = ({
       inputMode="numeric"
       aria-disabled={`${disabled}`}
       disabled={disabled}
+      value={value ?? undefined}
       onPaste={(event: ClipboardEvent<HTMLInputElement>) => {
         if (PastProcessor.preventNonNumber(event, max)) return
       }}

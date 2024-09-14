@@ -96,6 +96,33 @@ export class ChangeProcessor {
   }
 }
 
+export class l {
+  static formatInput = (
+    value: number | null,
+    enableSeparator: boolean,
+  ): boolean => {
+    if (!value) return true
+
+    // Delay the formatting to allow the default input to occur first
+    setTimeout(() => {
+      // Split the input string into integer and fractional parts
+      const [integerPart, fractionalPart] = value.toString().split('.')
+
+      // Use a regular expression to add the separator every 3 digits
+      const formattedInteger = integerPart!
+        .replace(/\s+/g, '')
+        .replace(/\B(?=(\d{3})+(?!\d))/g, enableSeparator ? ' ' : '')
+
+      const newValue =
+        fractionalPart ?
+          `${formattedInteger}.${fractionalPart}`
+        : formattedInteger
+    }, 0)
+
+    return true
+  }
+}
+
 export class KeyDownProcessor {
   static allowedKeys = [
     ...navigationEditingKeys,

@@ -1,11 +1,10 @@
-import NumericField from '@repo/ui/numericField'
-
 import { useEffect, useState } from 'react'
 
+import { NumericField } from '../../src'
 import PlayGround from './playground/Playground'
 
 function App() {
-  const [value, setValue] = useState<null | number>(null)
+  const [value, setValue] = useState<null | number>(324221)
 
   useEffect(() => {
     console.log({ value })

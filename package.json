@@ -1,24 +1,45 @@
 {
-  "name": "mighty-inputs",
-  "private": true,
+  "name": "idraaj",
+  "private": false,
+  "version": "0.0.2",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    "types": "./dist/index.d.ts",
+    "import": "./dist/index.mjs",
+    "require": "./dist/index.js"
+  },
+  "files": [
+    "dist/**/*"
+  ],
   "scripts": {
-    "build": "turbo build",
     "dev": "turbo dev",
     "lint": "turbo lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "build": "tsup src/index.ts --format cjs,esm --dts",
+    "publish-packages": "turbo run build lint test && changeset version && changeset publish"
   },
   "devDependencies": {
+    "@changesets/cli": "^2.27.8",
     "@trivago/prettier-plugin-sort-imports": "^4.3.0",
+    "@types/react": "^18.3.5",
     "prettier": "^3.2.5",
+    "tsup": "^8.2.4",
     "turbo": "^2.1.1",
     "typescript": "^5.4.5"
+  },
+  "peerDependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
   },
   "engines": {
     "node": ">=18"
   },
   "packageManager": "npm@10.8.2",
   "workspaces": [
-    "apps/*",
-    "packages/*"
+    "docs/*",
+    "src/*",
+    "playground/*"
   ]
 }
