@@ -1,50 +1,59 @@
 import type { ClipboardEvent, FC, KeyboardEvent } from 'react'
 
-import type { INumberInput } from './types'
-import { ChangeProcessor, KeyDownProcessor, PastProcessor } from './utils'
+import type { FloatProps, INumberInput } from './types'
+import { IOProcessor, KeyDownProcessor, PastProcessor } from './utils'
 
-const NumericField: FC<INumberInput> = ({
-  type = 'float',
-  onChange,
-  max,
-  value = null,
-  disabled = false,
-  enableSeparator = false,
-  decimalSeparator = 'dot',
-}) => {
+const NumericField: FC<INumberInput> = (props) => {
+  const type = props?.type ?? 'float'
+
+  const {
+    onChange,
+    max,
+    value,
+    disabled,
+    enableSeparator,
+    decimalSeparator,
+    ...rest
+  } = {
+    ...props,
+    onChange: props?.onChange,
+    max: props?.max ?? 9007199254740991,
+    value: props?.value ?? null,
+    disabled: Boolean(props?.disabled),
+    enableSeparator: props?.enableSeparator ?? false,
+    decimalSeparator:
+      type === 'float' ?
+        ((props as FloatProps)?.decimalSeparator ?? 'dot')
+      : undefined,
+  }
+
+  const params = {
+    type,
+    onChange,
+    max,
+    value,
+    disabled,
+    enableSeparator,
+    decimalSeparator,
+  }
+
   return (
     <input
+      {...rest}
       type="text"
       inputMode="numeric"
       aria-disabled={`${disabled}`}
       disabled={disabled}
-      value={value ?? undefined}
-      onPaste={(event: ClipboardEvent<HTMLInputElement>) => {
-        if (PastProcessor.preventNonNumber(event, max)) return
-      }}
-      onKeyDown={(event: KeyboardEvent) => {
-        if (KeyDownProcessor.preventNonNumeric(event)) return
-
-        if (KeyDownProcessor.preventRepeat(event)) return
-
-        if (
-          KeyDownProcessor.preventDecimalSeparator(
-            event,
-            type,
-            decimalSeparator,
-          )
-        )
-          return
-
-        if (KeyDownProcessor.preventMax(event, max)) return
-
-        if (KeyDownProcessor.preventSpecial(event)) return
-
-        if (KeyDownProcessor.formatInput(event, enableSeparator)) return
-      }}
-      onChange={(event) => {
-        ChangeProcessor.onChange(event, enableSeparator, onChange)
-      }}
+      value={IOProcessor.formatInput(value, enableSeparator)}
+      onPaste={(event: ClipboardEvent<HTMLInputElement>) =>
+        PastProcessor.handleDefault(event, params)
+      }
+      onKeyDown={(event: KeyboardEvent<HTMLInputElement>) =>
+        KeyDownProcessor.handleDefault(event, params)
+      }
+      onChange={(event) =>
+        IOProcessor.formatOutput(event, enableSeparator, onChange)
+      }
     />
   )
 }

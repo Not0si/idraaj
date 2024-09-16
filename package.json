@@ -2,6 +2,10 @@
   "name": "idraaj",
   "private": false,
   "version": "0.0.2",
+  "license": "MIT",
+  "repository": {
+    "url": "https://github.com/Not0si/idraaj"
+  },
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
@@ -15,6 +19,7 @@
   ],
   "scripts": {
     "dev": "turbo dev",
+    "dev:play": "turbo run dev --filter=playground...",
     "lint": "turbo lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "build": "tsup src/index.ts --format cjs,esm --dts",
@@ -40,6 +45,6 @@
   "workspaces": [
     "docs/*",
     "src/*",
-    "playground/*"
+    "playground"
   ]
 }
