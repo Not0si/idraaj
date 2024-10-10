@@ -1,40 +1,44 @@
-import type { ClipboardEvent, FC, KeyboardEvent } from 'react'
+import { type FC, useState } from 'react'
 
-import type { FloatProps, INumberInput } from './types'
-import { IOProcessor, KeyDownProcessor, PastProcessor } from './utils'
+import type { FloatProps, INumericFieldProps } from './types'
+import Validator from './validator'
 
-const NumericField: FC<INumberInput> = (props) => {
+const NumericField: FC<INumericFieldProps> = (props) => {
   const type = props?.type ?? 'float'
+  const [localValue, setLocalValue] = useState<string>('')
 
   const {
     onChange,
     max,
-    value,
+    // value,
     disabled,
     enableSeparator,
     decimalSeparator,
+    scale,
     ...rest
   } = {
     ...props,
     onChange: props?.onChange,
     max: props?.max ?? 9007199254740991,
-    value: props?.value ?? null,
+    // value: props?.value ?? null,
     disabled: Boolean(props?.disabled),
     enableSeparator: props?.enableSeparator ?? false,
     decimalSeparator:
       type === 'float' ?
         ((props as FloatProps)?.decimalSeparator ?? 'dot')
       : undefined,
+    scale: type === 'float' ? (props as FloatProps)?.scale : undefined,
   }
 
   const params = {
     type,
     onChange,
     max,
-    value,
+    // value,
     disabled,
     enableSeparator,
     decimalSeparator,
+    scale,
   }
 
   return (
@@ -44,16 +48,16 @@ const NumericField: FC<INumberInput> = (props) => {
       inputMode="numeric"
       aria-disabled={`${disabled}`}
       disabled={disabled}
-      value={IOProcessor.formatInput(value, enableSeparator)}
-      onPaste={(event: ClipboardEvent<HTMLInputElement>) =>
-        PastProcessor.handleDefault(event, params)
-      }
-      onKeyDown={(event: KeyboardEvent<HTMLInputElement>) =>
-        KeyDownProcessor.handleDefault(event, params)
-      }
-      onChange={(event) =>
-        IOProcessor.formatOutput(event, enableSeparator, onChange)
-      }
+      // value={Validator.onValue(value, params)}
+      value={localValue}
+      // onPaste={(event: ClipboardEvent<HTMLInputElement>) =>
+      //   PastProcessor.handleDefault(event, params)
+      // }
+      onKeyDown={(event) => Validator.onKeyDown(event, params)}
+      onChange={(event) => {
+        setLocalValue(event.target.value ?? '')
+        Validator.onChange(event, params)
+      }}
     />
   )
 }

@@ -1,6 +1,6 @@
 # Idraaj
 
-UI input components library designed to extend and fix some issues in standard HTML input elements
+An advanced HTML number input with enhanced features, including number formatting, customizable decimal separators, integer-only mode, and more.
 
 ## Numeric Field
 
@@ -17,7 +17,6 @@ function Component() {
 
   return (
     <NumericField
-      value={value}
       onChange={(val) => setValue(val)}
       decimalSeparator="comma"
       max={600000}

@@ -1,7 +1,8 @@
 {
   "name": "idraaj",
+  "description": "An advanced HTML number input with enhanced features, including number formatting, customizable decimal separators, integer-only mode, and more.",
   "private": false,
-  "version": "0.0.2",
+  "version": "0.0.3",
   "license": "MIT",
   "repository": {
     "url": "https://github.com/Not0si/idraaj"

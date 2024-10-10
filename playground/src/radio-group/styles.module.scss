@@ -1,0 +1,28 @@
+.container {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 14px;
+
+  .option {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+  }
+
+  .label {
+    margin: 0;
+    padding: 0;
+  }
+
+  .input {
+    width: max-content;
+    height: max-content;
+    margin: 0;
+    padding: 0;
+    cursor: pointer;
+  }
+}
