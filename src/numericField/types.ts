@@ -22,21 +22,31 @@ export type FloatProps = {
   scale?: number
 }
 
+type BaseProps = {
+  value?: null | number
+  onChange?: (
+    value: number | null,
+    event: ChangeEvent<HTMLInputElement>,
+  ) => void
+  max?: number
+  disabled?: boolean
+  enableSeparator?: boolean
+}
+
 export type INumericFieldProps = IHTMLInputPropsCleared &
-  (IntegerProps | FloatProps) & {
-    // value?: null | number
-    onChange?: (
-      value: number | null,
-      event: ChangeEvent<HTMLInputElement>,
-    ) => void
-    max?: number
-    disabled?: boolean
-    enableSeparator?: boolean
+  (IntegerProps | FloatProps) &
+  BaseProps
+
+export type IInternalProps = IHTMLInputPropsCleared &
+  BaseProps & {
+    type: 'float' | 'integer'
+    decimalSeparator: decimalSeparatorType | undefined
+    scale: number | undefined
   }
 
 export type validatorProps = {
   type: 'float' | 'integer'
-  // value?: null | number
+  value?: null | number
   onChange?: (
     value: number | null,
     event: ChangeEvent<HTMLInputElement>,

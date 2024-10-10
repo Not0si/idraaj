@@ -44,7 +44,7 @@ function App() {
           selectedType === 'integer' ? undefined : selectedSeparaor
         }
         scale={4}
-        // value={value}
+        value={value}
         onChange={(value) => {
           setValue(value)
         }}

@@ -1,4 +1,4 @@
-import { type FC, useState } from 'react'
+import { type FC, useEffect, useState } from 'react'
 
 import type { FloatProps, INumericFieldProps } from './types'
 import Validator from './validator'
@@ -10,7 +10,7 @@ const NumericField: FC<INumericFieldProps> = (props) => {
   const {
     onChange,
     max,
-    // value,
+    value,
     disabled,
     enableSeparator,
     decimalSeparator,
@@ -20,7 +20,7 @@ const NumericField: FC<INumericFieldProps> = (props) => {
     ...props,
     onChange: props?.onChange,
     max: props?.max ?? 9007199254740991,
-    // value: props?.value ?? null,
+    value: props?.value ?? null,
     disabled: Boolean(props?.disabled),
     enableSeparator: props?.enableSeparator ?? false,
     decimalSeparator:
@@ -34,12 +34,19 @@ const NumericField: FC<INumericFieldProps> = (props) => {
     type,
     onChange,
     max,
-    // value,
+    value,
     disabled,
     enableSeparator,
     decimalSeparator,
     scale,
   }
+
+  // Sync inner state with outer state when outer state changes
+  useEffect(() => {
+    if (value !== Number(localValue)) {
+      setLocalValue(value?.toString() ?? '')
+    }
+  }, [value])
 
   return (
     <input
