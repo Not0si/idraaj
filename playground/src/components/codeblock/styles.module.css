@@ -1,0 +1,33 @@
+.container {
+  width: 100%;
+  min-height: 52px;
+  display: flex;
+  align-items: flex-start;
+  padding-block: 16px;
+  padding-inline: 12px 48px;
+  border-radius: 6px;
+  border: 1px solid #f3f3f3;
+  background: #fcfcfc;
+  color: #4c4f69;
+  position: relative;
+}
+
+.button {
+  position: absolute;
+  right: 8px;
+  top: 12px;
+  width: 26px;
+  height: 26px;
+  background: #fff;
+  border: 1px solid #ededed;
+  border-radius: 5px;
+  color: #171717;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+
+.button svg {
+  width: 14px;
+  height: 14px;
+}

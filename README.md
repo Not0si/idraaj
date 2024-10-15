@@ -5,7 +5,7 @@ An advanced HTML number input with enhanced features, including number formattin
 ## Numeric Field
 
 ```typescript
-import { numericField } from 'idraaj'
+import { NumericField } from 'idraaj'
 import { useState } from 'react'
 
 function Component() {
