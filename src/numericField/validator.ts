@@ -116,7 +116,57 @@ export default class Validator {
     }
   }
 
-  static onPaste = (event: ClipEvent, config: validatorProps): void => {}
+  static onPaste = (event: ClipEvent, config: validatorProps): void => {
+    const inputElement = event.target as HTMLInputElement
+    const inputValue = inputElement.value
+    const pastedText = event.clipboardData.getData('text')
+    const { type, decimalSeparator, enableSeparator, scale, max } = config
+
+    const caretPosition = inputElement.selectionStart
+
+    const firstPart = inputValue.slice(0, caretPosition!)
+    const secondPart = inputValue.slice(caretPosition!)
+
+    const regex = new RegExp(enableSeparator ? ' ' : '', 'g')
+
+    const expectedValue = (firstPart + pastedText + secondPart)
+      .replace(regex, '')
+      .replace(',', '.')
+
+    const expectedNumber = Number(expectedValue.replace(',', '.'))
+
+    if (isNaN(expectedNumber)) {
+      return event.preventDefault()
+    }
+
+    if (max && expectedNumber > max) {
+      return event.preventDefault()
+    }
+
+    const [integerPart, fractionalPart] = expectedValue
+      .replace(',', '.')
+      .split('.')
+
+    if (type === 'float' && scale && (fractionalPart ?? '')?.length > scale) {
+      return event.preventDefault()
+    }
+
+    if (enableSeparator) {
+      const separator = decimalSeparator === 'comma' ? ',' : '.'
+
+      const formattedInteger = integerPart!.replace(
+        /\B(?=(\d{3})+(?!\d))/g,
+        enableSeparator ? ' ' : '',
+      )
+
+      inputElement.value =
+        fractionalPart ?
+          `${formattedInteger}${separator}${fractionalPart}`
+        : formattedInteger
+
+      return event.preventDefault()
+    }
+  }
 
   static onKeyDown = (event: KeyEvent, config: validatorProps): void => {
     const { type, decimalSeparator, enableSeparator, max, scale } = config
@@ -194,37 +244,60 @@ export default class Validator {
     ) {
       return event.preventDefault()
     }
+
+    if (enableSeparator && Keys.Numbers.includes(event.key)) {
+      const separator = decimalSeparator === 'comma' ? ',' : '.'
+
+      const formattedInteger = integerPart!.replace(
+        /\B(?=(\d{3})+(?!\d))/g,
+        enableSeparator ? ' ' : '',
+      )
+
+      targetElement.value =
+        fractionalPart ?
+          `${formattedInteger}${separator}${fractionalPart}`
+        : formattedInteger
+
+      return event.preventDefault()
+    }
+  }
+
+  static stringToNumber = (value: string, config: validatorProps) => {
+    const { enableSeparator } = config
+
+    const regex = new RegExp(enableSeparator ? ' ' : '', 'g')
+    const formattedValue = value.replace(regex, '').replace(',', '.')
+
+    const parsedValue = Number(formattedValue)
+
+    return isNaN(parsedValue) ? null : parsedValue
   }
 
   static onChange = (event: ReformEvent, config: validatorProps): void => {
-    const { onChange, enableSeparator } = config
+    const { onChange } = config
     const { value } = event.target
 
     if (!onChange) return
 
-    // const regex = new RegExp(enableSeparator ? ' ' : '', 'g')
-    // const formattedValue = value.replace(regex, '')
-
-    const parsedValue = parseFloat(value.replace(',', '.'))
-
-    onChange(isNaN(parsedValue) ? null : parsedValue, event)
+    onChange(this.stringToNumber(value, config), event)
   }
 
-  static onValue = (value: number | null, config: validatorProps): string => {
+  static numberToString = (
+    value: number | null,
+    config: validatorProps,
+  ): string => {
     if (!value) return ''
     const { enableSeparator, decimalSeparator } = config
     const separator = decimalSeparator === 'comma' ? ',' : '.'
 
-    const [integerPart, fractionalPart] = value.toString().split(separator)
+    const [integerPart, fractionalPart] = value.toString().split('.')
 
-    const formattedInteger = integerPart!.replace(/\s+/g, '')
-    // .replace(/\B(?=(\d{3})+(?!\d))/g, enableSeparator ? ' ' : '')
+    const formattedInteger = integerPart!
+      .replace(/\s+/g, '')
+      .replace(/\B(?=(\d{3})+(?!\d))/g, enableSeparator ? ' ' : '')
 
-    const newValue =
-      fractionalPart ?
+    return fractionalPart ?
         `${formattedInteger}${separator}${fractionalPart}`
       : formattedInteger
-
-    return newValue
   }
 }

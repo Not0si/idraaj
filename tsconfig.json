@@ -3,6 +3,7 @@
   "display": "React Library",
   "compilerOptions": {
     "declaration": true,
+    "emitDeclarationOnly": true,
     "declarationMap": true,
     "esModuleInterop": true,
     "incremental": false,

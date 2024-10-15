@@ -21,7 +21,7 @@ function App() {
   const [selectedType, setSelectedType] = useState<INumericType>('float')
   const [selectedSeparaor, setSelectedSeparaor] =
     useState<INumericSeparator>('dot')
-  const [value, setValue] = useState<number | null>(null)
+  const [value, setValue] = useState<number | null>(3424)
 
   return (
     <PlayGround title="Numeric Field">
