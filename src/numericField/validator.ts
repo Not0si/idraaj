@@ -97,13 +97,13 @@ export default class Validator {
 
   static formatValue = (
     value: string | undefined,
-    enableSeparator: boolean,
+    enableSpacing: boolean,
     key: string,
   ) => {
     const stringValue = value ?? ''
 
     const formatedCurrentValue =
-      enableSeparator ? stringValue.replace(/\s+/g, '') : value
+      enableSpacing ? stringValue.replace(/\s+/g, '') : value
 
     // console.log({ stringValue, formatedCurrentValue })
 
@@ -120,14 +120,14 @@ export default class Validator {
     const inputElement = event.target as HTMLInputElement
     const inputValue = inputElement.value
     const pastedText = event.clipboardData.getData('text')
-    const { type, decimalSeparator, enableSeparator, scale, max } = config
+    const { type, decimalSeparator, enableSpacing, scale, max } = config
 
     const caretPosition = inputElement.selectionStart
 
     const firstPart = inputValue.slice(0, caretPosition!)
     const secondPart = inputValue.slice(caretPosition!)
 
-    const regex = new RegExp(enableSeparator ? ' ' : '', 'g')
+    const regex = new RegExp(enableSpacing ? ' ' : '', 'g')
 
     const expectedValue = (firstPart + pastedText + secondPart)
       .replace(regex, '')
@@ -151,12 +151,12 @@ export default class Validator {
       return event.preventDefault()
     }
 
-    if (enableSeparator) {
+    if (enableSpacing) {
       const separator = decimalSeparator === 'comma' ? ',' : '.'
 
       const formattedInteger = integerPart!.replace(
         /\B(?=(\d{3})+(?!\d))/g,
-        enableSeparator ? ' ' : '',
+        enableSpacing ? ' ' : '',
       )
 
       inputElement.value =
@@ -169,7 +169,7 @@ export default class Validator {
   }
 
   static onKeyDown = (event: KeyEvent, config: validatorProps): void => {
-    const { type, decimalSeparator, enableSeparator, max, scale } = config
+    const { type, decimalSeparator, enableSpacing, max, scale } = config
 
     /**
      *  **/
@@ -202,7 +202,7 @@ export default class Validator {
     const targetElement = event.target as HTMLInputElement
     const { currentValue, expectedValue } = this.formatValue(
       targetElement.value,
-      enableSeparator,
+      enableSpacing,
       event.key,
     )
 
@@ -245,12 +245,12 @@ export default class Validator {
       return event.preventDefault()
     }
 
-    if (enableSeparator && Keys.Numbers.includes(event.key)) {
+    if (enableSpacing && Keys.Numbers.includes(event.key)) {
       const separator = decimalSeparator === 'comma' ? ',' : '.'
 
       const formattedInteger = integerPart!.replace(
         /\B(?=(\d{3})+(?!\d))/g,
-        enableSeparator ? ' ' : '',
+        enableSpacing ? ' ' : '',
       )
 
       targetElement.value =
@@ -263,9 +263,9 @@ export default class Validator {
   }
 
   static stringToNumber = (value: string, config: validatorProps) => {
-    const { enableSeparator } = config
+    const { enableSpacing } = config
 
-    const regex = new RegExp(enableSeparator ? ' ' : '', 'g')
+    const regex = new RegExp(enableSpacing ? ' ' : '', 'g')
     const formattedValue = value.replace(regex, '').replace(',', '.')
 
     const parsedValue = Number(formattedValue)
@@ -287,14 +287,14 @@ export default class Validator {
     config: validatorProps,
   ): string => {
     if (!value) return ''
-    const { enableSeparator, decimalSeparator } = config
+    const { enableSpacing, decimalSeparator } = config
     const separator = decimalSeparator === 'comma' ? ',' : '.'
 
     const [integerPart, fractionalPart] = value.toString().split('.')
 
     const formattedInteger = integerPart!
       .replace(/\s+/g, '')
-      .replace(/\B(?=(\d{3})+(?!\d))/g, enableSeparator ? ' ' : '')
+      .replace(/\B(?=(\d{3})+(?!\d))/g, enableSpacing ? ' ' : '')
 
     return fractionalPart ?
         `${formattedInteger}${separator}${fractionalPart}`

@@ -11,7 +11,7 @@ const NumericField: FC<INumericFieldProps> = (props) => {
     max,
     value,
     disabled,
-    enableSeparator,
+    enableSpacing,
     decimalSeparator,
     scale,
     ...rest
@@ -21,7 +21,7 @@ const NumericField: FC<INumericFieldProps> = (props) => {
     max: props?.max ?? 9007199254740991,
     value: props?.value ?? null,
     disabled: Boolean(props?.disabled),
-    enableSeparator: props?.enableSeparator ?? false,
+    enableSpacing: props?.enableSpacing ?? false,
     decimalSeparator:
       type === 'float' ?
         ((props as FloatProps)?.decimalSeparator ?? 'dot')
@@ -35,7 +35,7 @@ const NumericField: FC<INumericFieldProps> = (props) => {
     max,
     value,
     disabled,
-    enableSeparator,
+    enableSpacing,
     decimalSeparator,
     scale,
   }

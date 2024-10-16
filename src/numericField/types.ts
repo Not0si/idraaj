@@ -13,11 +13,11 @@ type IHTMLInputPropsCleared = Omit<
 export type decimalSeparatorType = 'dot' | 'comma'
 
 type IntegerProps = {
-  type: 'integer'
+  type?: 'integer'
 }
 
 export type FloatProps = {
-  type: 'float'
+  type?: 'float'
   decimalSeparator?: decimalSeparatorType
   scale?: number
 }
@@ -30,7 +30,7 @@ type BaseProps = {
   ) => void
   max?: number
   disabled?: boolean
-  enableSeparator?: boolean
+  enableSpacing?: boolean
 }
 
 export type INumericFieldProps = IHTMLInputPropsCleared &
@@ -53,7 +53,7 @@ export type validatorProps = {
   ) => void
   max: number
   disabled: boolean
-  enableSeparator: boolean
+  enableSpacing: boolean
   decimalSeparator?: decimalSeparatorType
   scale?: number
 }

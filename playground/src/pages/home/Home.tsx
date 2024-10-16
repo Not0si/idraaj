@@ -139,7 +139,7 @@ export default Component`,
 <span class="line"><span style="color:#8839EF">  return</span><span style="color:#4C4F69"> (</span><span style="color:#04A5E5">&lt;</span><span style="color:#DF8E1D;font-style:italic">Fragment</span><span style="color:#04A5E5">&gt;</span></span>
 <span class="line"><span style="color:#04A5E5">              &lt;</span><span style="color:#DF8E1D;font-style:italic">NumericField</span></span>
 <span class="line"><span style="color:#DF8E1D;font-style:italic">                type</span><span style="color:#179299">=</span><span style="color:#40A02B">"</span><span style="color:#40A02B;font-style:italic">integer</span><span style="color:#40A02B">"</span></span>
-<span class="line"><span style="color:#DF8E1D;font-style:italic">                enableSeparator</span><span style="color:#179299">=</span><span style="color:#7C7F93">{</span><span style="color:#4C4F69;font-style:italic">true</span><span style="color:#7C7F93">}</span></span>
+<span class="line"><span style="color:#DF8E1D;font-style:italic">                enableSpacing</span><span style="color:#179299">=</span><span style="color:#7C7F93">{</span><span style="color:#4C4F69;font-style:italic">true</span><span style="color:#7C7F93">}</span></span>
 <span class="line"><span style="color:#DF8E1D;font-style:italic">                placeholder</span><span style="color:#179299">=</span><span style="color:#40A02B">"</span><span style="color:#40A02B;font-style:italic">With Spacing</span><span style="color:#40A02B">"</span></span>
 <span class="line"><span style="color:#DF8E1D;font-style:italic">            /</span><span style="color:#04A5E5">&gt;</span></span>
 <span class="line"><span style="color:#04A5E5">            &lt;</span><span style="color:#DF8E1D;font-style:italic">NumericField type</span><span style="color:#179299">=</span><span style="color:#40A02B">"</span><span style="color:#40A02B;font-style:italic">integer</span><span style="color:#40A02B">"</span><span style="color:#DF8E1D;font-style:italic"> placeholder</span><span style="color:#179299">=</span><span style="color:#40A02B">"</span><span style="color:#40A02B;font-style:italic">No Spacing</span><span style="color:#40A02B">"</span><span style="color:#DF8E1D;font-style:italic"> /</span><span style="color:#04A5E5">&gt;</span></span>
@@ -158,7 +158,7 @@ function Component() {
   return (<Fragment>
               <NumericField
                 type="integer"
-                enableSeparator={true}
+                enableSpacing={true}
                 placeholder="With Spacing"
             />
             <NumericField type="integer" placeholder="No Spacing" />
@@ -259,14 +259,14 @@ const Home = () => {
 
       <Section
         title="Spacing"
-        description="Set enableSeparator to true to easily read the number with spacing applied."
+        description="Set enableSpacing to true to easily read the number with spacing applied."
       >
         <>
           <CodeBlock {...examples['spacing']} />
           <div className={styles.showBox}>
             <NumericField
               type="integer"
-              enableSeparator={true}
+              enableSpacing={true}
               placeholder="With Spacing"
             />
             <NumericField type="integer" placeholder="No Spacing" />

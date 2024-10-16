@@ -10,6 +10,7 @@
   background: #fcfcfc;
   color: #4c4f69;
   position: relative;
+  overflow-x: auto;
 }
 
 .button {
