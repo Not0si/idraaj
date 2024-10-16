@@ -11,10 +11,6 @@ import { useState } from 'react'
 function Component() {
   const [value, setValue] = useState<null | number>(324221)
 
-
-  console.log({ value })
-
-
   return (
     <NumericField
       onChange={(val) => setValue(val)}
