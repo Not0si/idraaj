@@ -1,8 +1,20 @@
 {
   "name": "idraaj",
   "private": false,
-  "version": "0.0.84",
+  "version": "0.0.86",
   "license": "MIT",
+  "description": "An advanced HTML number input with features like number formatting, customizable decimal separators, and integer-only mode.",
+  "keywords": [
+    "number input",
+    "number formatting",
+    "decimal separators",
+    "integer-only",
+    "numeric input",
+    "react",
+    "validation",
+    "custom input",
+    "input component"
+  ],
   "homepage": "https://idraaj.vercel.app",
   "repository": {
     "url": "https://github.com/Not0si/idraaj"

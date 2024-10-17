@@ -2,6 +2,10 @@
 
 An advanced HTML number input with enhanced features, including number formatting, customizable decimal separators, integer-only mode, and more.
 
+## Documentation
+
+[Idraaj Documentation](https://idraaj.vercel.app/)
+
 ## Numeric Field
 
 ```typescript
